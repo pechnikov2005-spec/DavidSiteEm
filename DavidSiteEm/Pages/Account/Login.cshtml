@@ -1,0 +1,35 @@
+@page
+@model DavidSiteEm.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<div class="card">
+    <h1>Вход</h1>
+
+    @if (Request.Query["registered"] == "true")
+    {
+        <div class="alert alert-success">Регистрация прошла успешно. Войдите в систему.</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        <div class="form-group">
+            <label>Логин</label>
+            <input name="Login" value="@Model.Login" required/>
+        </div>
+        <div class="form-group">
+            <label>Пароль</label>
+            <input type="password" name="Password" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">Войти</button>
+    </form>
+
+    <p style="margin-top:1rem; font-size:0.88rem;">
+        Ещё не зарегистрированы? <a asp-page="/Account/Register" class="link-muted">Регистрация</a>
+    </p>
+</div>

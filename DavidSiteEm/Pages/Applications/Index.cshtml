@@ -1,0 +1,74 @@
+@page
+@model DavidSiteEm.Pages.Applications.ApplicationsIndexModel
+@{
+    ViewData["Title"] = "Мои заявки";
+}
+
+<div class="card">
+    <h1>Мои заявки</h1>
+
+    @if (!Model.Applications.Any())
+    {
+        <p style="color:#888;">У вас пока нет заявок. <a asp-page="/Applications/New" class="link-muted">Подать заявку</a></p>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Курс</th>
+                        <th>Дата начала</th>
+                        <th>Оплата</th>
+                        <th>Статус</th>
+                        <th>Отзыв</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var app in Model.Applications)
+                {
+                    <tr>
+                        <td>@app.Id</td>
+                        <td>@app.CourseName</td>
+                        <td>@app.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td>@(app.PaymentMethod == "cash" ? "Наличными" : "Перевод по номеру телефона")</td>
+                        <td>
+                            @{
+                                var badgeClass = app.Status switch {
+                                    "Новая" => "badge-new",
+                                    "Идет обучение" => "badge-active",
+                                    _ => "badge-done"
+                                };
+                            }
+                            <span class="badge @badgeClass">@app.Status</span>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(app.Review))
+                            {
+                                <span style="color:#555; font-size:0.88rem;">@app.Review</span>
+                            }
+                            else if (app.Status == "Обучение завершено")
+                            {
+                                <form method="post" asp-page-handler="Review" class="review-form">
+                                    <input type="hidden" name="AppId" value="@app.Id"/>
+                                    <textarea name="ReviewText" placeholder="Ваш отзыв..."></textarea>
+                                    <button type="submit" class="btn btn-secondary btn-sm" style="margin-top:0.3rem;">Отправить</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span style="color:#bbb; font-size:0.82rem;">—</span>
+                            }
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div style="margin-top:1.2rem;">
+        <a asp-page="/Applications/New" class="btn btn-primary">Новая заявка</a>
+    </div>
+</div>

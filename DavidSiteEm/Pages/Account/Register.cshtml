@@ -1,0 +1,47 @@
+@page
+@model DavidSiteEm.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<div class="card">
+    <h1>Регистрация</h1>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-error">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        <div class="form-group">
+            <label>Логин (латиница и цифры, не менее 6 символов)</label>
+            <input name="Login" value="@Model.Login" placeholder="mylogin1" required/>
+            <span class="field-error">@Model.LoginError</span>
+        </div>
+        <div class="form-group">
+            <label>Пароль (минимум 8 символов)</label>
+            <input type="password" name="Password" required/>
+            <span class="field-error">@Model.PasswordError</span>
+        </div>
+        <div class="form-group">
+            <label>ФИО</label>
+            <input name="FullName" value="@Model.FullName" placeholder="Иванов Иван Иванович" required/>
+            <span class="field-error">@Model.FullNameError</span>
+        </div>
+        <div class="form-group">
+            <label>Телефон (формат: 8(XXX)XXX-XX-XX)</label>
+            <input name="Phone" value="@Model.Phone" placeholder="8(999)123-45-67" required/>
+            <span class="field-error">@Model.PhoneError</span>
+        </div>
+        <div class="form-group">
+            <label>Электронная почта</label>
+            <input type="email" name="Email" value="@Model.Email" placeholder="example@mail.ru" required/>
+            <span class="field-error">@Model.EmailError</span>
+        </div>
+        <button type="submit" class="btn btn-primary">Создать пользователя</button>
+    </form>
+
+    <p style="margin-top:1rem; font-size:0.88rem;">
+        Уже зарегистрированы? <a asp-page="/Account/Login" class="link-muted">Войти</a>
+    </p>
+</div>

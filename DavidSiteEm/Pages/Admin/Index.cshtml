@@ -1,0 +1,65 @@
+@page
+@model DavidSiteEm.Pages.Admin.AdminIndexModel
+@{
+    ViewData["Title"] = "Панель администратора";
+}
+
+<div class="card">
+    <h1>Панель администратора</h1>
+
+    @if (!Model.Applications.Any())
+    {
+        <p style="color:#888;">Заявок пока нет.</p>
+    }
+    else
+    {
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Пользователь</th>
+                        <th>Курс</th>
+                        <th>Дата начала</th>
+                        <th>Оплата</th>
+                        <th>Статус</th>
+                        <th>Изменить статус</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var app in Model.Applications)
+                {
+                    <tr>
+                        <td>@app.Id</td>
+                        <td>@app.User?.Login<br/><span style="color:#888;font-size:0.8rem;">@app.User?.FullName</span></td>
+                        <td>@app.CourseName</td>
+                        <td>@app.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td>@(app.PaymentMethod == "cash" ? "Наличными" : "Перевод")</td>
+                        <td>
+                            @{
+                                var badgeClass = app.Status switch {
+                                    "Новая" => "badge-new",
+                                    "Идет обучение" => "badge-active",
+                                    _ => "badge-done"
+                                };
+                            }
+                            <span class="badge @badgeClass">@app.Status</span>
+                        </td>
+                        <td>
+                            <form method="post" asp-page-handler="SetStatus">
+                                <input type="hidden" name="AppId" value="@app.Id"/>
+                                <select name="NewStatus" style="padding:0.3rem; border:1px solid #ddd; border-radius:4px; font-size:0.85rem;">
+                                    <option value="Новая" selected="@(app.Status == "Новая")">Новая</option>
+                                    <option value="Идет обучение" selected="@(app.Status == "Идет обучение")">Идет обучение</option>
+                                    <option value="Обучение завершено" selected="@(app.Status == "Обучение завершено")">Обучение завершено</option>
+                                </select>
+                                <button type="submit" class="btn btn-secondary btn-sm" style="margin-left:0.3rem;">Сохранить</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
